@@ -1,4 +1,4 @@
-# A Ultra-Fast, Memory-Efficient Data Engine for Analytical Workloads
+# An Ultra-Fast, Memory-Efficient Data Engine for Analytical Workloads
 
 ## Key Features & Benefits
 * **Blazing-Fast Queries:** Millisecond query execution on millions of rows (see benchmarks).
