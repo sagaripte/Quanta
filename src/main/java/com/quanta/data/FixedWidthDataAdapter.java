@@ -1,0 +1,40 @@
+package com.quanta.data;
+
+import com.quanta.blob.FixedRegion;
+import com.quanta.blob.Region;
+
+import java.io.IOException;
+
+public abstract class FixedWidthDataAdapter<T> extends DataAdapter<T> {
+
+    protected FixedRegion data;
+
+    public FixedWidthDataAdapter(int width, boolean isString) {
+        super(width, isString);
+
+        this.data = new FixedRegion(width);
+    }
+
+    public abstract void insert(int index, T value) throws IOException;
+
+    public int getInt(int index) throws IOException {
+        throw new UnsupportedOperationException("");
+    }
+
+    @Override
+    public int size() {
+        return data.size();
+    }
+
+    @Override
+    public Region[] regions() {
+        return new Region[] {data};
+    }
+
+
+    public void print() throws IOException {
+        for (int i = 0; i < data.size(); i++) {
+            System.out.println(i + " \t" + get(i));
+        }
+    }
+}
