@@ -56,9 +56,9 @@ quanta.rebuild();
 Query query = adEvents.newQuery()
     .and("region", "North America")
     .and("device", "Mobile", "Tablet")
-    .gt("year", 2021)
-    .not("month", 5, 6)
-    .lt("day", 15);
+    .gt("year", 2021) // Year > 2021
+    .not("month", 5, 6)  // Exclude May & June data
+    .lt("day", 15);  // Include on when Day < 15
 
 // 4. Process Query Results (Example)
 query.forEach(row ->{
@@ -104,9 +104,9 @@ While Quanta is highly optimized for speed and memory efficiency, there are cert
 1. Deleting Rows is Not Supported
 * **Why?** Quanta is optimized for append-only writes, similar to how columnar databases work.
 * **Workaround:** If you need to "delete" a row, consider marking it as inactive using a status column (e.g., deleted = true) and filtering on deleted = false. 
-2. Filtering on Fact Columns is Not Supported 🚫
+2. Filtering on Fact Columns is Not Supporte
 * **Why?** Fact columns store raw numerical data without indexing, making direct filtering inefficient.
-3. Partial Text Search is Not Supported 🚫
+3. Partial Text Search is Not Supported
 * **Why?** Quanta uses dictionary encoding for string storage, meaning it stores only exact matches.
 * **Workaround:** Fetch all unique labels in a column and query for the specific ones you are interested in.
 
