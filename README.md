@@ -1,23 +1,20 @@
 # A Ultra-Fast, Memory-Efficient Data Engine for Analytical Workloads
 
 ## Key Features & Benefits
-
-* **Blazing-Fast Queries:** Millisecond-level query execution on millions of rows (see benchmarks!).
-* **Efficient Data Ingestion:** Optimized memory management allows rapid loading & appending of data.
-* **Ultra-Low Memory Usage:** Uses raw memory allocation & dictionary encoding (~25MB/column for 20M records).
+* **Blazing-Fast Queries:** Millisecond query execution on millions of rows (see benchmarks).
+* **Efficient Data Ingestion:** Rapid loading & appending with optimized memory management.
+* **Ultra-Low Memory Usage:** Raw memory allocation & dictionary encoding (~25MB/column for 20M records).
 * **Single-JVM Performance:** No need for distributed systems or in-memory data grids.
 * **Persistent & Crash-Resilient:** Memory-mapped files enable instant reloads & durability.
-* **Optimized for Analytics:** Handles millions of records, ideal for read-heavy queries.
+* **Analytics-Optimized:** Handles millions of records, ideal for read-heavy queries.
 * **Real-Time & Batch Processing:** Supports incremental updates and low-latency reads.
-* **Zero Third-Party Dependencies:** Pure Java implementation with no external libraries required.
+* **Zero Third-Party Dependencies:** Pure Java implementation with no external libraries.
 
 ## How Quanta Works
-
-Quanta bypasses Java's garbage collection by directly managing memory, minimizing footprint and eliminating GC pauses.  It uses:
-
-* **Raw Memory Allocation:**  Manages memory outside the Java heap for optimal control.
+Quanta bypasses Java's garbage collection by directly managing memory, minimizing footprint and eliminating GC pauses using:
+* **Raw Memory Allocation:** Manages memory outside the Java heap for optimal control.
 * **Memory-Mapped Files:** Provides fast persistence, instant reloads, and efficient data access.
-* **Dictionary-Based Compression:** Compresses repeated values for efficient storage of string data.
+* **Dictionary-Based Compression:** Compresses repeated values for efficient string storage.
 * **Bitset Indexing:** Enables ultra-fast query execution.
 
 ## Quick Start Example (Ad Event Analysis)
@@ -89,7 +86,7 @@ Ad events data for: Tablet
 ## Comparable Solutions & How Quanta Differs
 | Technology       | Key Features                                     | Differences from Quanta                                      |
 |-----------------|-------------------------------------------------|--------------------------------------------------------------|
-| **Apache Arrow** | Columnar memory format, zero-copy reads, efficient in-memory analytics | Arrow is **a file format**, while Quanta provides **indexing, filtering, and persistence**. |
+| **Apache Arrow** | Columnar memory format, zero-copy reads, efficient in-memory analytics | Arrow is a file format, while Quanta provides indexing, filtering, and persistence. |
 | **Apache Druid** | Real-time OLAP, columnar storage, inverted indexing | Druid requires **distributed clusters**, while Quanta is **single-JVM, lightweight, and ultra-fast**. |
 | **DuckDB**       | In-memory OLAP for analytical queries, columnar execution | DuckDB supports **SQL**, while Quanta is optimized for **direct memory access and low-latency filtering**. |
 | **RocksDB**      | High-performance key-value store, LSM-tree-based indexing | RocksDB is **optimized for key-value lookups**, while Quanta is **better for analytical queries**. |
@@ -100,14 +97,11 @@ Ad events data for: Tablet
 ## What Quanta Doesn't Support (Yet)
 While Quanta is highly optimized for speed and memory efficiency, there are certain limitations to be aware of.
 
-1. Deleting Rows is Not Supported
-* **Why?** Quanta is optimized for append-only writes, similar to how columnar databases work.
-* **Workaround:** If you need to "delete" a row, consider marking it as inactive using a status column (e.g., deleted = true) and filtering on deleted = false. 
-2. Filtering on Fact Columns is Not Supporte
-* **Why?** Fact columns store raw numerical data without indexing, making direct filtering inefficient.
-3. Partial Text Search is Not Supported
-* **Why?** Quanta uses dictionary encoding for string storage, meaning it stores only exact matches.
-* **Workaround:** Fetch all unique labels in a column and query for the specific ones you are interested in.
+1. No Row Deletions: Optimized for append-only writes.
+* Workaround: Mark rows as inactive using a status column (e.g., deleted = true) and filter on deleted = false.
+2. No Filtering on Fact Columns: Fact columns store raw numerical data without indexing.
+3. No Partial Text Search: Uses dictionary encoding, stores only exact matches.
+* Workaround: Fetch all unique labels and query the specific ones.
 
 ## License
 
