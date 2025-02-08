@@ -1,14 +1,16 @@
 # An Ultra-Fast, Memory-Efficient Data Engine for Analytical Workloads
 
+Quanta is a high-performance analytical data engine designed for **millisecond query execution**, **minimal memory footprint**, and **lightning-fast ingestion**. Built for **single-node performance**, it eliminates the complexity of distributed systems while delivering **enterprise-grade speed** for analytical workloads.
+
 ## Key Features & Benefits
-* **Blazing-Fast Queries:** Millisecond query execution on millions of rows (see benchmarks).
-* **Efficient Data Ingestion:** Rapid loading & appending with optimized memory management.
-* **Ultra-Low Memory Usage:** Raw memory allocation & dictionary encoding (~25MB/column for 20M records).
-* **Single-JVM Performance:** No need for distributed systems or in-memory data grids.
-* **Persistent & Crash-Resilient:** Memory-mapped files enable instant reloads & durability.
-* **Analytics-Optimized:** Handles millions of records, ideal for read-heavy queries.
-* **Real-Time & Batch Processing:** Supports incremental updates and low-latency reads.
-* **Zero Third-Party Dependencies:** Pure Java implementation with no external libraries.
+
+* **Blazing-Fast Queries** – Execute complex queries on millions of records in milliseconds (<5ms / 20M rows).
+* **Efficient Data Ingestion:** Rapid loading & appending with optimized memory management (<30ms / 20M records).
+* **Ultra-Low Memory Usage** – Efficient memory allocation & dictionary encoding (~25MB/column for 20M rows).
+* **Zero GC Overhead** – Direct memory management eliminates Java's garbage collection pauses.
+* **Crash-Resilient & Persistent** – Memory-mapped files enable instant reloads & durability.
+* **Real-Time & Batch Processing** – Supports incremental updates with low-latency reads.
+* **Zero Third-Party Dependencies** – A pure **Java** implementation with no external libraries.
 
 ## How Quanta Works
 Quanta bypasses Java's garbage collection by directly managing memory, minimizing footprint and eliminating GC pauses using:
@@ -84,24 +86,24 @@ Ad events data for: Tablet
 ```
 
 ## Comparable Solutions & How Quanta Differs
-| Technology       | Key Features                                     | Differences from Quanta                                      |
-|-----------------|-------------------------------------------------|--------------------------------------------------------------|
-| **Apache Arrow** | Columnar memory format, zero-copy reads, efficient in-memory analytics | Arrow is a file format, while Quanta provides indexing, filtering, and persistence. |
-| **Apache Druid** | Real-time OLAP, columnar storage, inverted indexing | Druid requires **distributed clusters**, while Quanta is **single-JVM, lightweight, and ultra-fast**. |
-| **DuckDB**       | In-memory OLAP for analytical queries, columnar execution | DuckDB supports **SQL**, while Quanta is optimized for **direct memory access and low-latency filtering**. |
-| **RocksDB**      | High-performance key-value store, LSM-tree-based indexing | RocksDB is **optimized for key-value lookups**, while Quanta is **better for analytical queries**. |
-| **ClickHouse**   | Fast columnar database, OLAP workloads, compression | ClickHouse is **distributed**, while Quanta is a **single-instance, ultra-light alternative**. |
-| **RedisBloom / RedisJSON** | In-memory caching, Bloom filters for indexing | Redis is a **key-value store**, while Quanta is **a structured, queryable data store**. |
-| **MonetDB**      | Columnar storage, in-memory OLAP | MonetDB is **a full SQL database**, whereas Quanta is **schema-defined but query-optimized**. |
+
+## Quanta vs. Other Solutions
+
+| Technology       | Key Features                                 | How Quanta Differs                        |
+|-----------------|---------------------------------------------|--------------------------------------------|
+| **Apache Arrow**| Columnar memory format, zero-copy reads     | **Full indexing, filtering, persistence** |
+| **Apache Druid**| Real-time OLAP, requires cluster setup      | **Single-node, no dependencies**         |
+| **DuckDB**      | SQL-based in-memory OLAP engine            | **Direct memory access, low-latency filters** |
+| **RocksDB**     | High-performance key-value store           | **Optimized for analytical queries**      |
+| **ClickHouse**  | Fast OLAP DB, columnar storage, distributed | **Single-instance, ultra-light alternative** |
+
 
 ## What Quanta Doesn't Support (Yet)
 While Quanta is highly optimized for speed and memory efficiency, there are certain limitations to be aware of.
 
-1. No Row Deletions: Optimized for append-only writes.
-* Workaround: Mark rows as inactive using a status column (e.g., deleted = true) and filter on deleted = false.
-2. No Filtering on Fact Columns: Fact columns store raw numerical data without indexing.
-3. No Partial Text Search: Uses dictionary encoding, stores only exact matches.
-* Workaround: Fetch all unique labels and query the specific ones.
+* **No Row Deletions** – Workaround: Use a deleted = true flag.
+* **No Filtering on Fact Columns** – Fact columns store raw values, no indexing.
+* **No Partial Text Search** – Uses dictionary encoding for exact matches.
 
 ## License
 
