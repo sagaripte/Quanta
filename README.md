@@ -37,11 +37,11 @@ Quanta adEvents = new QuantaBuilder("AdEvents", "/data/ad_tracking")
     .addFact("bid_price")
     .getQuanta();
 
-// 2. Insert 20 Million Records (Example Data Generation)
+// 2. Insert 20 Million Records 
 Random rand = new Random();
-String[] campaigns = {/* ... */}; // Your campaign data
-String[] regions = {/* ... */};    // Your region data
-String[] devices = {/* ... */};    // Your device data
+String[] campaigns = {/* ... */}; // campaign data
+String[] regions = {/* ... */};    // region data
+String[] devices = {/* ... */};    // device data
 
 for (int i = 0; i < 20_000_000; i++) {
     Tuple row = new Tuple();
@@ -67,24 +67,24 @@ query.forEach(row ->{
 ```
 
 ## Performance
-The following example demonstrates the performance of Quanta with 20 million ad events:
+The following example demonstrates the performance of Quanta with 20 million ad events on Apple M2:
 
 ```text
-Populated 20000000 ad events in 29685 ms
+Populated 20,000,000 ad events in 29,685 ms
 
-Finished searching records in: 4724ms
+Finished searching records in: 4,724 ms
 
 Ad events data for: Mobile
   Impressions: 168339958
   Clicks: 84016088
   Avg Bid Price: 2.5495461161066393
-  # of Rows: 336966
+  # of Rows: 336,966
 
 Ad events data for: Tablet
   Impressions: 167460993
   Clicks: 83637485
   Avg Bid Price: 2.549587425648991
-  # of Rows: 335330
+  # of Rows: 335,330
 ```
 
 ## Comparable Solutions & How Quanta Differs
