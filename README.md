@@ -85,8 +85,6 @@ Ad events data for: Tablet
   # of Rows: 335,330
 ```
 
-## Comparable Solutions & How Quanta Differs
-
 ## Quanta vs. Other Solutions
 
 | Technology       | Key Features                                 | How Quanta Differs                        |
