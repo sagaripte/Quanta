@@ -4,7 +4,7 @@
 
 * **Blazing-Fast Queries:** Millisecond-level query execution on millions of rows (see benchmarks!).
 * **Efficient Data Ingestion:** Optimized memory management allows rapid loading & appending of data.
-* **Ultra-Low Memory Usage:** Uses raw memory allocation & dictionary encoding (~650MB for 20M records).
+* **Ultra-Low Memory Usage:** Uses raw memory allocation & dictionary encoding (~25MB/column for 20M records).
 * **Single-JVM Performance:** No need for distributed systems or in-memory data grids.
 * **Persistent & Crash-Resilient:** Memory-mapped files enable instant reloads & durability.
 * **Optimized for Analytics:** Handles millions of records, ideal for read-heavy queries.
@@ -38,7 +38,6 @@ Quanta adEvents = new QuantaBuilder("AdEvents", "/data/ad_tracking")
     .getQuanta();
 
 // 2. Insert 20 Million Records 
-Random rand = new Random();
 String[] campaigns = {/* ... */}; // campaign data
 String[] regions = {/* ... */};    // region data
 String[] devices = {/* ... */};    // device data
@@ -58,7 +57,7 @@ Query query = adEvents.newQuery()
     .and("device", "Mobile", "Tablet")
     .gt("year", 2021) // Year > 2021
     .not("month", 5, 6)  // Exclude May & June data
-    .lt("day", 15); // Include on when Day < 15
+    .lt("day", 15); // Include only when Day < 15
 
 // 4. Process Query Results (Example)
 query.forEach(row ->{
