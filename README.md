@@ -90,7 +90,7 @@ Ad events data for: Tablet
 ## 🔹 Comparable Solutions & How Quanta Differs
 | Technology       | Key Features                                     | Differences from Quanta                                      |
 |-----------------|-------------------------------------------------|--------------------------------------------------------------|
-| **Apache Arrow** | Columnar memory format, zero-copy reads, efficient in-memory analytics | Arrow is **just a format**, while Quanta provides **indexing, filtering, and persistence**. |
+| **Apache Arrow** | Columnar memory format, zero-copy reads, efficient in-memory analytics | Arrow is **a file format**, while Quanta provides **indexing, filtering, and persistence**. |
 | **Apache Druid** | Real-time OLAP, columnar storage, inverted indexing | Druid requires **distributed clusters**, while Quanta is **single-JVM, lightweight, and ultra-fast**. |
 | **DuckDB**       | In-memory OLAP for analytical queries, columnar execution | DuckDB supports **SQL**, while Quanta is optimized for **direct memory access and low-latency filtering**. |
 | **RocksDB**      | High-performance key-value store, LSM-tree-based indexing | RocksDB is **optimized for key-value lookups**, while Quanta is **better for analytical queries**. |
