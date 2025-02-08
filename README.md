@@ -1,6 +1,6 @@
-# Quanta: Ultra-Fast, Memory-Efficient Data Engine for Analytical Workloads
+# A Ultra-Fast, Memory-Efficient Data Engine for Analytical Workloads
 
-## 🚀 Key Features & Benefits
+## Key Features & Benefits
 
 * **Blazing-Fast Queries:** Millisecond-level query execution on millions of rows (see benchmarks!).
 * **Efficient Data Ingestion:** Optimized memory management allows rapid loading & appending of data.
@@ -11,7 +11,7 @@
 * **Real-Time & Batch Processing:** Supports incremental updates and low-latency reads.
 * **Zero Third-Party Dependencies:** Pure Java implementation with no external libraries required.
 
-## 💡 How Quanta Works
+## How Quanta Works
 
 Quanta bypasses Java's garbage collection by directly managing memory, minimizing footprint and eliminating GC pauses.  It uses:
 
@@ -20,7 +20,7 @@ Quanta bypasses Java's garbage collection by directly managing memory, minimizin
 * **Dictionary-Based Compression:** Compresses repeated values for efficient storage of string data.
 * **Bitset Indexing:** Enables ultra-fast query execution.
 
-## 💡 ⚡️ Quick Start Example (Ad Event Analysis)
+## Quick Start Example (Ad Event Analysis)
 
 ```java
 // 1. Define the dataset schema
@@ -58,7 +58,7 @@ Query query = adEvents.newQuery()
     .and("device", "Mobile", "Tablet")
     .gt("year", 2021) // Year > 2021
     .not("month", 5, 6)  // Exclude May & June data
-    .lt("day", 15);  // Include on when Day < 15
+    .lt("day", 15); // Include on when Day < 15
 
 // 4. Process Query Results (Example)
 query.forEach(row ->{
@@ -66,7 +66,7 @@ query.forEach(row ->{
 });
 ```
 
-## 📊 Performance
+## Performance
 The following example demonstrates the performance of Quanta with 20 million ad events:
 
 ```text
@@ -87,7 +87,7 @@ Ad events data for: Tablet
   # of Rows: 335330
 ```
 
-## 🔹 Comparable Solutions & How Quanta Differs
+## Comparable Solutions & How Quanta Differs
 | Technology       | Key Features                                     | Differences from Quanta                                      |
 |-----------------|-------------------------------------------------|--------------------------------------------------------------|
 | **Apache Arrow** | Columnar memory format, zero-copy reads, efficient in-memory analytics | Arrow is **a file format**, while Quanta provides **indexing, filtering, and persistence**. |
@@ -98,7 +98,7 @@ Ad events data for: Tablet
 | **RedisBloom / RedisJSON** | In-memory caching, Bloom filters for indexing | Redis is a **key-value store**, while Quanta is **a structured, queryable data store**. |
 | **MonetDB**      | Columnar storage, in-memory OLAP | MonetDB is **a full SQL database**, whereas Quanta is **schema-defined but query-optimized**. |
 
-## 📌 What Quanta Doesn't Support (Yet)
+## What Quanta Doesn't Support (Yet)
 While Quanta is highly optimized for speed and memory efficiency, there are certain limitations to be aware of.
 
 1. Deleting Rows is Not Supported
@@ -110,11 +110,11 @@ While Quanta is highly optimized for speed and memory efficiency, there are cert
 * **Why?** Quanta uses dictionary encoding for string storage, meaning it stores only exact matches.
 * **Workaround:** Fetch all unique labels in a column and query for the specific ones you are interested in.
 
-## 📄 License
+## License
 
 Apache 2.0  
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome!  
 
