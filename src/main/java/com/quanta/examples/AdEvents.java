@@ -8,10 +8,7 @@ import com.quanta.util.Tuple;
 import com.quanta.util.Utils;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class AdEvents {
 
@@ -46,7 +43,7 @@ public class AdEvents {
             int rows;
 
             void print(String name) {
-                System.out.println("Ad events data for: " + name + "\n");
+                System.out.println("Ad events data for: " + name);
                 System.out.println("  Impressions: " + impressions);
                 System.out.println("  Clicks: " + clicks);
                 System.out.println("  Avg Bid Price: " + (bid_price / rows));
@@ -76,16 +73,16 @@ public class AdEvents {
         String location = Utils.USER_HOME + "/temp/data/ad_tracking";
 
         QuantaBuilder qb = new QuantaBuilder("AdEvents", location, cleanup)
-                .addPrimaryKeyIntColumn("event_id")
+                .addIntPrimaryKey("event_id")
                 .addStringColumn("campaign", 30, IndexCardinality.TINY)
                 .addDictionaryColumn("region", 10)
                 .addDictionaryColumn("device", 10)
                 .addIntColumn("year", IndexCardinality.TINY)
                 .addIntColumn("month", IndexCardinality.TINY)
                 .addIntColumn("day", IndexCardinality.TINY)
-                .addIntegerFact("impressions")
-                .addIntegerFact("clicks")
-                .addFact("bid_price");
+                .addIntMetric("impressions")
+                .addIntMetric("clicks")
+                .addMetric("bid_price");
 
         return qb.getQuanta();
 

@@ -91,14 +91,37 @@ public class QuantaBuilder {
     }
 
     /**
-     * Adds a primary key integer column where each int is going to be unique.
+     * Adds a non indexed string column.
+     *
+     * @param name        The column name.
+     * @param maxWidth    The maximum possible width of the string in this column.
+     * @return The updated {@code QuantaBuilder} instance.
+     * @throws IOException If an error occurs while adding the column.
+     */
+    public QuantaBuilder addNoIndexStringColumn(String name, int maxWidth) throws IOException {
+        return addColumn(name, new FixedStringAdapter(maxWidth), IndexType.NO_INDEX, 0);
+    }
+
+    /**
+     * Adds a primary key integer column where each int value is going to be unique.
      *
      * @param name The column name.
      * @return The updated {@code QuantaBuilder} instance.
      * @throws IOException If an error occurs while adding the column.
      */
-    public QuantaBuilder addPrimaryKeyIntColumn(String name) throws IOException {
+    public QuantaBuilder addIntPrimaryKey(String name) throws IOException {
         return addColumn(name, new IntAdapter(), IndexType.UNIQUE_VALUES, IndexCardinality.LARGE.getMaxDistinct());
+    }
+
+    /**
+     * Adds a primary key long column where each long value is going to be unique.
+     *
+     * @param name The column name.
+     * @return The updated {@code QuantaBuilder} instance.
+     * @throws IOException If an error occurs while adding the column.
+     */
+    public QuantaBuilder addLongPrimaryKey(String name) throws IOException {
+        return addColumn(name, new LongAdapter(), IndexType.UNIQUE_VALUES, IndexCardinality.LARGE.getMaxDistinct());
     }
 
     /**
@@ -164,7 +187,7 @@ public class QuantaBuilder {
      * @return The updated {@code QuantaBuilder} instance.
      * @throws IOException If an error occurs while adding the column.
      */
-    public QuantaBuilder addFact(String name) throws IOException {
+    public QuantaBuilder addMetric(String name) throws IOException {
         String file  = quanta.base_dir + "/" + name;
         quanta.addColumn(name, new FactColumn(name, file, new DoubleAdapter()));
 
@@ -178,7 +201,7 @@ public class QuantaBuilder {
      * @return The updated {@code QuantaBuilder} instance.
      * @throws IOException If an error occurs while adding the column.
      */
-    public QuantaBuilder addIntegerFact(String name) throws IOException {
+    public QuantaBuilder addIntMetric(String name) throws IOException {
         String file  = quanta.base_dir + "/" + name;
         quanta.addColumn(name, new FactColumn(name, file, new IntAdapter()));
 

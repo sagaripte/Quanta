@@ -24,16 +24,16 @@ Quanta bypasses Java's garbage collection by directly managing memory, minimizin
 ```java
 // 1. Define the dataset schema
 Quanta adEvents = new QuantaBuilder("AdEvents", "/data/ad_tracking")
-    .addPrimaryKeyIntColumn("event_id")
+    .addIntPrimaryKey("event_id")
     .addStringColumn("campaign", 30, IndexCardinality.TINY)
     .addDictionaryColumn("region", 10)
     .addDictionaryColumn("device", 10)
     .addIntColumn("year", IndexCardinality.TINY)
     .addIntColumn("month", IndexCardinality.TINY)
     .addIntColumn("day", IndexCardinality.TINY)
-    .addIntegerFact("impressions")
-    .addIntegerFact("clicks")
-    .addFact("bid_price")
+    .addIntMetric("impressions")
+    .addIntMetric("clicks")
+    .addMetric("bid_price")
     .getQuanta();
 
 // 2. Insert 20 Million Records 
