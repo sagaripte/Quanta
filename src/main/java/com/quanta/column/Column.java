@@ -22,18 +22,18 @@ public abstract class Column<T> implements Closeable {
 
     public final String name;
     protected Blob blob;
-    protected DataAdapter<T> adapter;
+    protected DataAdapter<T> values;
 
-    public Column(String name, DataAdapter<T> adapter) {
-        this.name    = name;
-        this.adapter = adapter;
+    public Column(String name, DataAdapter<T> dataAdapter) {
+        this.name   = name;
+        this.values = dataAdapter;
     }
 
     protected void init(String file, Region...regions) throws IOException {
         if (regions == null)
             regions = new Region[0];
 
-        Region[] va = adapter.regions();
+        Region[] va = values.regions();
         Region[] rp = new Region[va.length + regions.length];
 
         System.arraycopy(va, 0, rp, 0, va.length);
@@ -50,22 +50,22 @@ public abstract class Column<T> implements Closeable {
         if (value instanceof String s) {
             s = s.trim();
             s = PRINT.matcher(s).replaceAll("");
-            adapter.add((T)s);
+            values.add((T)s);
         } else {
-            adapter.add(value);
+            values.add(value);
         }
     }
 
     public T get(int index) throws IOException {
-        return adapter.get(index);
+        return values.get(index);
     }
 
     public String toString(int index) throws IOException {
-        return adapter.toString(get(index));
+        return values.toString(get(index));
     }
 
     public int size() {
-        return adapter.size();
+        return values.size();
     }
 
 
@@ -81,7 +81,7 @@ public abstract class Column<T> implements Closeable {
     public abstract void writeMeta(JSONWriter json) throws IOException;
 
     public void write(JSONWriter json, int index) throws IOException {
-        json.writeValue(adapter.toString(get(index)), adapter.isString);
+        json.writeValue(values.toString(get(index)), values.isString);
     }
 
     @Override
@@ -102,10 +102,10 @@ public abstract class Column<T> implements Closeable {
         if (isArray) {
             Object[] os = (Object[])value;
             for (Object o : os) {
-                list.add(adapter.parse(o));
+                list.add(values.parse(o));
             }
         } else {
-            list.add(adapter.parse(value));
+            list.add(values.parse(value));
         }
 
         if (optr.equals("=") || optr.equals("eq")) {
@@ -134,10 +134,10 @@ public abstract class Column<T> implements Closeable {
         if (isArray) {
             Object[] os = (Object[])value;
             for (Object o : os) {
-                list.add(adapter.parse(o));
+                list.add(values.parse(o));
             }
         } else {
-            list.add(adapter.parse(value));
+            list.add(values.parse(value));
         }
 
         if (optr.equals("=") || optr.equals("eq")) {

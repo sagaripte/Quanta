@@ -11,7 +11,7 @@ public class AllUniqueValuesIndexColumn<T> extends SortedColumn<T> {
     public AllUniqueValuesIndexColumn(String name, String file, DataAdapter<T> adapter) throws IOException {
         super(name, adapter, Integer.MAX_VALUE);
 
-        init(file, sorted.regions()[0]);
+        init(file, sortedValues.regions()[0]);
     }
 
     @Override
@@ -21,13 +21,13 @@ public class AllUniqueValuesIndexColumn<T> extends SortedColumn<T> {
 
     @Override
     public void add(T value) throws IOException {
-        int loc = adapter.add(value);
+        int loc = values.add(value);
         sort(value, loc, true);
     }
 
     @Override
-    protected void forIndex(ByteBitSet set, int index) throws IOException {
-        set.set(index);
+    protected void forValueId(ByteBitSet set, int valueId) throws IOException {
+        set.set(valueId);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class AllUniqueValuesIndexColumn<T> extends SortedColumn<T> {
         json.write("name", name);
         json.write("index",   "unique");
         json.write("is_fact", "false", false);
-        json.write("data", adapter.isString ? "text" : "int");
+        json.write("data", values.isString ? "text" : "int");
         json.newArray("values");
         json.closeArray();
 

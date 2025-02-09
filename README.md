@@ -4,9 +4,9 @@ Quanta is a high-performance analytical data engine designed for **millisecond q
 
 ## Key Features & Benefits
 
-* **Blazing-Fast Queries** – Execute complex queries on millions of records in milliseconds (<5ms / 20M rows).
-* **Efficient Data Ingestion:** Rapid loading & appending with optimized memory management (<30ms / 20M records).
-* **Ultra-Low Memory Usage** – Efficient memory allocation & dictionary encoding (~25MB/column for 20M rows).
+* **Blazing-Fast Queries** – Execute complex slide & dice queries on millions of records in milliseconds.
+* **Efficient Data Ingestion:** Rapid loading & appending with optimized memory management.
+* **Ultra-Low Memory Usage** – Efficient memory allocation & dictionary encoding.
 * **Zero GC Overhead** – Direct memory management eliminates Java's garbage collection pauses.
 * **Crash-Resilient & Persistent** – Memory-mapped files enable instant reloads & durability.
 * **Real-Time & Batch Processing** – Supports incremental updates with low-latency reads.
@@ -18,6 +18,19 @@ Quanta bypasses Java's garbage collection by directly managing memory, minimizin
 * **Memory-Mapped Files:** Provides fast persistence, instant reloads, and efficient data access.
 * **Dictionary-Based Compression:** Compresses repeated values for efficient string storage.
 * **Bitset Indexing:** Enables ultra-fast query execution.
+
+## Benchmark Scenarios
+
+| Example Name        | # Rows (Millions)       | Populate Time.    | Query Time     | Avg Column Size (MB) |
+|---------------------|---------------|-------------------|----------------|---------------------|
+| [NYC Taxi](https://github.com/sagaripte/Quanta/blob/main/src/main/java/com/quanta/examples/NYCTaxiData.java)       | 20    | 47 secs               | 1.5 secs            | 25                 |
+|  10 Columns      | 50    | 2.07 min                | 3.6 sec            | 60                 |
+|  4 Metrics       | 100   | 4.5 min               | 7.3 sec            | 115                 |
+|                     | 150  | 6.5 min               | 10 sec            | 160                 |
+| [Ad Events](https://github.com/sagaripte/Quanta/blob/main/src/main/java/com/quanta/examples/AdEvents.java)       | 20    | 28 sec               | 1.1 sec            | 25                 |
+|  7 Columns      | 50    | 1.23 min               | 2.9 sec            | 60                 |
+|  3 Metrics        | 100   | 2.5 min               | 5.8 sec            | 110                 |
+|                     | 150   | 3.9 min               | 8.9 sec            | 160                 |
 
 ## Quick Start Example (Ad Event Analysis)
 
@@ -62,27 +75,6 @@ Query query = adEvents.newQuery()
 query.forEach(row ->{
     // ... iterate through the results of the query ...
 });
-```
-
-## Performance
-The following example demonstrates the performance of Quanta with 20 million ad events on Apple M2:
-
-```text
-Populated 20,000,000 ad events in 29,685 ms
-
-Finished searching records in: 4,724 ms
-
-Ad events data for: Mobile
-  Impressions: 168339958
-  Clicks: 84016088
-  Avg Bid Price: 2.5495461161066393
-  # of Rows: 336,966
-
-Ad events data for: Tablet
-  Impressions: 167460993
-  Clicks: 83637485
-  Avg Bid Price: 2.549587425648991
-  # of Rows: 335,330
 ```
 
 ## Quanta vs. Other Solutions

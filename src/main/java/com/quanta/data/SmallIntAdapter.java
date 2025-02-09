@@ -2,10 +2,12 @@ package com.quanta.data;
 
 import java.io.IOException;
 import java.sql.Types;
+import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 public class SmallIntAdapter extends FixedWidthDataAdapter<Integer> {
 
-    public static final FixedWidthDataAdapter<Integer> newAdapter(int count) {
+    public static FixedWidthDataAdapter<Integer> newAdapter(int count) {
         if (count < 256) {
             return new SmallIntAdapter(1);
         } else if (count < 65_535) {
@@ -50,12 +52,26 @@ public class SmallIntAdapter extends FixedWidthDataAdapter<Integer> {
 
     @Override
     public Integer get(int index) throws IOException {
-        return helper.toInt(data.getBytes(index));
+        return getInt(index);
     }
-
     @Override
     public int getInt(int index) throws IOException {
         return helper.toInt(data.getBytes(index));
+
+//        if (cache.containsKey(index))
+//            return cache.get(index);
+//        cache.put(index, val);
+//        return val;
+    }
+
+    @Override
+    public byte[] toBytes(Integer value) {
+        return helper.toBytes(value);
+    }
+
+    @Override
+    public boolean match(byte[] rawData, byte[] toCompare, int index) {
+        return helper.match(rawData, toCompare, index * width);
     }
 
     @Override
@@ -85,6 +101,8 @@ public class SmallIntAdapter extends FixedWidthDataAdapter<Integer> {
         byte[] toBytes(int i);
 
         int toInt(byte v[]);
+
+        boolean match(byte[] rawData, byte[] toCompare, int offset);
     }
 
     static class OneByte implements Helper {
@@ -96,6 +114,11 @@ public class SmallIntAdapter extends FixedWidthDataAdapter<Integer> {
         @Override
         public int toInt(byte[] v) {
             return Byte.toUnsignedInt(v[0]);
+        }
+
+        @Override
+        public boolean match(byte[] rawData, byte[] toCompare, int offset) {
+            return rawData[offset] == toCompare[offset];
         }
     }
 
@@ -112,6 +135,12 @@ public class SmallIntAdapter extends FixedWidthDataAdapter<Integer> {
         public int toInt(byte[] v) {
             return (v[1] & 0xFF) << 8 | (v[0] & 0xFF);
         }
+
+        @Override
+        public boolean match(byte[] rawData, byte[] toCompare, int offset) {
+            int i2 = offset + 1;
+            return rawData[offset] == toCompare[offset] && rawData[i2] == toCompare[i2];
+        }
     }
 
     static class ThreeByte implements Helper {
@@ -127,6 +156,18 @@ public class SmallIntAdapter extends FixedWidthDataAdapter<Integer> {
         @Override
         public int toInt(byte[] v) {
             return (v[2] & 0xFF) << 16 | (v[1] & 0xFF) << 8 | (v[0] & 0xFF);
+        }
+
+        @Override
+        public boolean match(byte[] rawData, byte[] toCompare, int offset) {
+            boolean match = true;
+            for (int j = 0; j < 3; j++) {
+                if (rawData[offset + j] != toCompare[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            return match;
         }
     }
 
@@ -145,5 +186,56 @@ public class SmallIntAdapter extends FixedWidthDataAdapter<Integer> {
         public int toInt(byte[] v) {
             return (v[3] & 0xFF) << 24 | (v[2] & 0xFF) << 16 | (v[1] & 0xFF) << 8 | (v[0] & 0xFF);
         }
+
+        @Override
+        public boolean match(byte[] rawData, byte[] toCompare, int offset) {
+            boolean match = true;
+            for (int j = 0; j < 3; j++) {
+                if (rawData[offset + j] != toCompare[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            return match;
+        }
     }
+//
+//    private class LookupCache {
+//        private final int capacity;
+//        private final int[] keys;
+//        private final int[] values;
+//        // To mark whether a slot contains a valid entry.
+//        private final boolean[] valid;
+//
+//        public LookupCache(int capacity) {
+//            this.capacity = capacity;
+//            this.keys = new int[capacity];
+//            this.values = new int[capacity];
+//            this.valid = new boolean[capacity];
+//        }
+//
+//        private int hash(int key) {
+//            return (key % capacity + capacity) % capacity;
+//        }
+//
+//        public void put(int key, int value) {
+//            int index = hash(key);
+//            keys[index] = key;
+//            values[index] = value;
+//            valid[index] = true;
+//        }
+//
+//        public int get(int key) {
+//            int index = hash(key);
+//            if (!valid[index] || keys[index] != key) {
+//                throw new NoSuchElementException("Key not found: " + key);
+//            }
+//            return values[index];
+//        }
+//
+//        public boolean containsKey(int key) {
+//            int index = hash(key);
+//            return valid[index] && keys[index] == key;
+//        }
+//    }
 }

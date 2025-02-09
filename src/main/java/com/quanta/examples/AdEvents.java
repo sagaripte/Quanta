@@ -13,14 +13,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public class AdEvents {
 
     public static void main(String[] args) throws Exception {
-        boolean delete_old_data = false; // Set true to delete & regenerate data
+        boolean delete_old_data = true; // Set true to delete & regenerate data
 
         // setup data model
         Quanta adEvents = setup(delete_old_data);
 
         // Insert millions of ad events in real-time
         if (delete_old_data)
-            populateAdEvents(adEvents, 20_000_000);
+            populateAdEvents(adEvents, 150_000_000);
 
         long time = System.currentTimeMillis();
 

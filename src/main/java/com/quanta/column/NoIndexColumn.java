@@ -53,7 +53,7 @@ public class NoIndexColumn<T> extends Column<T> {
         json.write("name",    name);
         json.write("index",   "no");
         json.write("is_fact", "false", false);
-        json.write("data",    adapter.isString ? "text" : "int");
+        json.write("data",    values.isString ? "text" : "int");
 
         json.closeObject();
     }

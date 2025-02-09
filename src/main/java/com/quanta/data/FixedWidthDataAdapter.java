@@ -21,6 +21,27 @@ public abstract class FixedWidthDataAdapter<T> extends DataAdapter<T> {
         throw new UnsupportedOperationException("");
     }
 
+    public byte[] toBytes(T value) {
+        throw new UnsupportedOperationException("");
+    }
+
+    public boolean match(byte[] rawData, byte[] toCompare, int index) {
+        int offset = index * width;
+        boolean match = true;
+        for (int j = 0; j < width; j++) {
+            if (rawData[offset + j] != toCompare[j]) {
+                match = false;
+                break;
+            }
+        }
+
+        return match;
+    }
+
+    public byte[] getRawBytes(int fromRow, int count) throws IOException {
+        return data.getRawBytes(fromRow, count);
+    }
+
     @Override
     public int size() {
         return data.size();

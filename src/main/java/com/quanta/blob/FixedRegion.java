@@ -239,6 +239,61 @@ public class FixedRegion extends Region {
         return blob.getBytes(rp(index), width);
     }
 
+    /**
+     * Reads 'count' rows starting from 'fromRow' from the memory‐mapped region
+     * and returns their raw bytes in a single byte array.
+     * This method handles cases where the rows span across multiple blocks.
+     *
+     * @param fromRow the starting row index (0‐based)
+     * @param count   the number of rows to read
+     * @return a byte array containing the raw bytes for the requested rows.
+     *         The length of the returned array is count * width.
+     * @throws ArrayIndexOutOfBoundsException if the requested range is out of bounds.
+     */
+    public byte[] getRawBytes(int fromRow, int count) throws IOException {
+        if (fromRow < 0 || fromRow + count > size) {
+            throw new ArrayIndexOutOfBoundsException(
+                    "Requested rows from " + fromRow + " count " + count + ", size " + size);
+        }
+
+        // Total number of bytes to be read.
+        int totalBytes = count * width;
+        byte[] result = new byte[totalBytes];
+
+        int pos = 0;   // Position in the result array (in bytes)
+        int row = fromRow;  // Current row index to read
+
+        // Loop until we have read all requested rows.
+        while (pos < totalBytes) {
+            // Determine which block the current row is in.
+            int blockIndex = row / SIZE;
+            // The offset within that block (in rows)
+            int offsetInBlock = row % SIZE;
+            // How many rows remain in this block starting at offsetInBlock.
+            int rowsLeftInBlock = SIZE - offsetInBlock;
+            // How many rows to read from this block:
+            int rowsToRead = Math.min(count - (row - fromRow), rowsLeftInBlock);
+
+            // Calculate the starting byte offset for the current row in its block.
+            // The method 'rp(row)' essentially computes:
+            //    blocks[blockIndex] + (offsetInBlock * width)
+            int baseOffset = blocks[blockIndex] + (offsetInBlock * width);
+            // Number of bytes to read in this iteration.
+            int bytesToRead = rowsToRead * width;
+
+            // Fetch the contiguous block of bytes from the blob.
+            byte[] data = blob.getBytes(baseOffset, bytesToRead);
+            // Copy the fetched bytes into the result array.
+            System.arraycopy(data, 0, result, pos, bytesToRead);
+
+            // Advance the position and row count.
+            pos += bytesToRead;
+            row += rowsToRead;
+        }
+
+        return result;
+    }
+
     public static void main(String[] args) throws IOException {
         new File(Utils.USER_HOME + "/temp/fr_1").delete();
 

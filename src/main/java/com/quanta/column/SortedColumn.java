@@ -6,7 +6,6 @@ import com.quanta.data.SmallIntAdapter;
 import com.quanta.util.ByteBitSet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,21 +14,21 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class SortedColumn<T> extends Column<T> {
 
-    protected FixedWidthDataAdapter<Integer> sorted;
+    protected FixedWidthDataAdapter<Integer> sortedValues;
     protected Lock lock;
 
     public SortedColumn(String name, DataAdapter<T> adapter, int maxUnique) {
         super(name, adapter);
         this.lock = new ReentrantLock();
-        this.sorted = SmallIntAdapter.newAdapter(maxUnique);
+        this.sortedValues = SmallIntAdapter.newAdapter(maxUnique);
     }
 
     protected void sort(T input, int index, boolean ensureUnique) throws IOException {
         if (index == 0) {
-            sorted.add(index);
+            sortedValues.add(index);
         } else {
 
-            int size = sorted.size();
+            int size = sortedValues.size();
             int low = 0;
             int high = size - 1;
 
@@ -40,16 +39,16 @@ public abstract class SortedColumn<T> extends Column<T> {
             while (low <= high) {
                 int mid = (low + high) >>> 1;
                 //System.out.println(low + " : " + high + " : " + mid);
-                mid_id  = sorted.get(mid);
-                mid_val = adapter.get(mid_id);
-                compare = adapter.compare(mid_val, input);
+                mid_id  = sortedValues.get(mid);
+                mid_val = values.get(mid_id);
+                compare = values.compare(mid_val, input);
 
                 if (compare < 0)
                     low = mid + 1;
                 else if (compare > 0)
                     high = mid - 1;
                 else if (ensureUnique) {
-                    throw new IllegalStateException("Colum:" + this.name + ", Key: " + input + ", Unique key violation index: " + mid_id + ":" + mid_val + ", repeat index: " + index);
+                    throw new IllegalStateException("Column:" + this.name + ", Key: " + input + ", Unique key violation index: " + mid_id + ":" + mid_val + ", repeat index: " + index);
                 } else {
                     break;
                 }
@@ -62,9 +61,9 @@ public abstract class SortedColumn<T> extends Column<T> {
 
                 //System.out.println("Adding : [" + index + "] size: " + total + ", at: " + at_index);
                 if (at_index >= total) {
-                    sorted.add(index);
+                    sortedValues.add(index);
                 } else {
-                   sorted.insert(at_index, index);
+                   sortedValues.insert(at_index, index);
                 }
 
                 //printSortedTable();
@@ -75,9 +74,9 @@ public abstract class SortedColumn<T> extends Column<T> {
 
     protected void printSortedTable() throws IOException {
         //unique + 1;
-        for (int i = 0; i < sorted.size(); i++) {
-            int id = sorted.get(i);
-            String val = (String)adapter.get(id);
+        for (int i = 0; i < sortedValues.size(); i++) {
+            int id = sortedValues.get(i);
+            String val = (String) values.get(id);
 
             System.out.println(id + ", " + val);
         }
@@ -88,7 +87,7 @@ public abstract class SortedColumn<T> extends Column<T> {
     public int search(T value) throws IOException {
         //System.out.println("\n\nSEARCH: " + value);
         int low = 0;
-        int high = adapter.size() - 1;
+        int high = values.size() - 1;
 
         int mid_id = 0;
         T mid_val = null;
@@ -98,10 +97,10 @@ public abstract class SortedColumn<T> extends Column<T> {
 
         while (low <= high) {
             int mid = (low + high) >>> 1;
-            mid_id  = sorted.get(mid);
+            mid_id  = sortedValues.get(mid);
 
-            mid_val = adapter.get(mid_id);
-            compare = adapter.compare(mid_val, value);
+            mid_val = values.get(mid_id);
+            compare = values.compare(mid_val, value);
 
             //System.out.println(low + ", " + high + ", " + mid + ", id:" + mid_id + ", v:" + mid_val + " comp:" + compare );
 
@@ -126,7 +125,7 @@ public abstract class SortedColumn<T> extends Column<T> {
             for (T val : list) {
                 int search = search(val);
                 if (search > -1)
-                    forIndex(set, sorted.get(search));
+                    forValueId(set, sortedValues.get(search));
                     //set.set(sorted.getInt(search));
             }
 
@@ -142,42 +141,29 @@ public abstract class SortedColumn<T> extends Column<T> {
         set.not();
 
         return set;
-        /*lock.lock();
-        try {
-            ByteBitSet set = new ByteBitSet(adapter.size());
-            //set.fill(0xFFFFFFFFFFFFFFFFl);
-
-            for (T val : list) {
-                int search = search(val);
-                if (search > -1)
-                    forIndex(set, sorted.get(search));
-            }
-
-            return set;
-        } finally {
-            lock.unlock();
-        }*/
     }
 
-    protected abstract void forIndex(ByteBitSet result, int index) throws IOException;
+    protected abstract void forValueId(ByteBitSet result, int valueId) throws IOException;
 
     @Override
     public final ByteBitSet gt(T value) throws IOException {
         lock.lock();
-
         try {
+            //long start = System.currentTimeMillis();
             int size = size();
             ByteBitSet set = new ByteBitSet(size);
             int search = Math.abs(search(value));
 
-            for (int i = search; i < adapter.size(); i++) {
+            for (int i = search; i < values.size(); i++) {
                 //set.set(sorted.getInt(search));
-                forIndex(set, sorted.get(i));
+                forValueId(set, sortedValues.get(i));
             }
+            //System.out.println(" - GT: " + (System.currentTimeMillis() - start));
             return set;
         } finally {
             lock.unlock();
         }
+
     }
 
     @Override
@@ -190,7 +176,7 @@ public abstract class SortedColumn<T> extends Column<T> {
             int search = Math.abs(search(value));
 
             for (int i = search; i > -1; i--) {
-                forIndex(set, sorted.get(i));
+                forValueId(set, sortedValues.get(i));
             }
             return set;
         } finally {
@@ -208,11 +194,11 @@ public abstract class SortedColumn<T> extends Column<T> {
             int from = Math.abs(search(low));
             int to   = Math.abs(search(high));
 
-            if (from < sorted.size()) {
-                to = Math.min(to, sorted.size());
+            if (from < sortedValues.size()) {
+                to = Math.min(to, sortedValues.size());
 
                 for (int i = from; i < to; i++) {
-                    forIndex(set, sorted.get(i));
+                    forValueId(set, sortedValues.get(i));
                 }
             }
             return set;
@@ -227,7 +213,7 @@ public abstract class SortedColumn<T> extends Column<T> {
         for (T val : list) {
             int search = search(val);
             if (search > -1)
-                ans.add(adapter.toString(val));
+                ans.add(values.toString(val));
         }
 
         return ans.toArray(new String[0]);
@@ -243,9 +229,9 @@ public abstract class SortedColumn<T> extends Column<T> {
                 found.add(search);
         }
 
-        for (int i = 0; i < adapter.size(); i++) {
+        for (int i = 0; i < values.size(); i++) {
             if (!found.contains(i))
-                ans.add(adapter.toString(adapter.get(i)));
+                ans.add(values.toString(values.get(i)));
         }
 
         return ans.toArray(new String[0]);
@@ -255,8 +241,8 @@ public abstract class SortedColumn<T> extends Column<T> {
         int search = Math.abs(search(item));
         Set<String> ans = new HashSet<>();
 
-        for (int i = search; i < adapter.size(); i++) {
-            ans.add(adapter.toString(adapter.get(i)));
+        for (int i = search; i < values.size(); i++) {
+            ans.add(values.toString(values.get(i)));
         }
 
         return ans.toArray(new String[0]);
@@ -266,7 +252,7 @@ public abstract class SortedColumn<T> extends Column<T> {
 
         int search = Math.abs(search(item));
         for (int i = search; i > -1; i--) {
-            ans.add(adapter.toString(adapter.get(i)));
+            ans.add(values.toString(values.get(i)));
         }
 
         return ans.toArray(new String[0]);
@@ -277,11 +263,11 @@ public abstract class SortedColumn<T> extends Column<T> {
         int from = Math.abs(search(low));
         int to   = Math.abs(search(high));
 
-        if (from < sorted.size()) {
-            to = Math.min(to, sorted.size());
+        if (from < sortedValues.size()) {
+            to = Math.min(to, sortedValues.size());
 
             for (int i = from; i < to; i++) {
-                ans.add(adapter.toString(adapter.get(i)));
+                ans.add(values.toString(values.get(i)));
             }
         }
 
@@ -291,8 +277,8 @@ public abstract class SortedColumn<T> extends Column<T> {
         Set<String> set = new HashSet<>();
         //String[] ans = new String[adapter.size()];
 
-        for (int i = 0; i < adapter.size(); i++) {
-            set.add(adapter.toString(adapter.get(i)));
+        for (int i = 0; i < values.size(); i++) {
+            set.add(values.toString(values.get(i)));
         }
 
         return set.toArray(new String[0]);

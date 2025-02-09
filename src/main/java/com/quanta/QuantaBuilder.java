@@ -189,7 +189,7 @@ public class QuantaBuilder {
      */
     public QuantaBuilder addMetric(String name) throws IOException {
         String file  = quanta.base_dir + "/" + name;
-        quanta.addColumn(name, new FactColumn(name, file, new DoubleAdapter()));
+        quanta.addColumn(name, new MetricColumn(name, file, new DoubleAdapter()));
 
         return this;
     }
@@ -203,7 +203,7 @@ public class QuantaBuilder {
      */
     public QuantaBuilder addIntMetric(String name) throws IOException {
         String file  = quanta.base_dir + "/" + name;
-        quanta.addColumn(name, new FactColumn(name, file, new IntAdapter()));
+        quanta.addColumn(name, new MetricColumn(name, file, new IntAdapter()));
 
         return this;
     }

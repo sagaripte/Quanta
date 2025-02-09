@@ -3,14 +3,13 @@ package com.quanta.column;
 import com.quanta.data.DataAdapter;
 import com.quanta.util.ByteBitSet;
 import com.quanta.util.JSONWriter;
-import com.quanta.data.DoubleAdapter;
 
 import java.io.IOException;
 import java.util.List;
 
-public class FactColumn<T> extends Column<T> {
+public class MetricColumn<T> extends Column<T> {
 
-    public FactColumn(String name, String file, DataAdapter<T> adapter) throws IOException {
+    public MetricColumn(String name, String file, DataAdapter<T> adapter) throws IOException {
         super(name, adapter);
 
         init(file);
@@ -21,10 +20,10 @@ public class FactColumn<T> extends Column<T> {
     }
 
     public double getDouble(int index) throws IOException {
-        return (Double)super.adapter.get(index);
+        return (Double)super.values.get(index);
     }
     public double getInt(int index) throws IOException {
-        return (Integer)super.adapter.get(index);
+        return (Integer)super.values.get(index);
     }
 
     @Override
