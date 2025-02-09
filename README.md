@@ -21,16 +21,17 @@ Quanta bypasses Java's garbage collection by directly managing memory, minimizin
 
 ## Benchmark Scenarios
 
-| Example Name        | # Rows (Millions)       | Populate Time.    | Query Time     | Avg Column Size (MB) |
-|---------------------|---------------|-------------------|----------------|---------------------|
-| [NYC Taxi](https://github.com/sagaripte/Quanta/blob/main/src/main/java/com/quanta/examples/NYCTaxiData.java)       | 20    | 47 secs               | 1.5 secs            | 25                 |
-|  10 Columns      | 50    | 2.07 min                | 3.6 sec            | 60                 |
-|  4 Metrics       | 100   | 4.5 min               | 7.3 sec            | 115                 |
-|                     | 150  | 6.5 min               | 10 sec            | 160                 |
-| [Ad Events](https://github.com/sagaripte/Quanta/blob/main/src/main/java/com/quanta/examples/AdEvents.java)       | 20    | 28 sec               | 1.1 sec            | 25                 |
-|  7 Columns      | 50    | 1.23 min               | 2.9 sec            | 60                 |
-|  3 Metrics        | 100   | 2.5 min               | 5.8 sec            | 110                 |
-|                     | 150   | 3.9 min               | 8.9 sec            | 160                 |
+| Example Name        | # Rows (Millions)       | Populate Time    | Query Time     | Avg Column Size (MB) |
+|---------------------|---------------|------------------|----------------|---------------------|
+| [NYC Taxi](https://github.com/sagaripte/Quanta/blob/main/src/main/java/com/quanta/examples/NYCTaxiData.java)       | 20    | 47 secs              | 1.5 sec            | 25                 |
+|        | 50    | 2.07 min               | 3.6 sec            | 60                 |
+|         | 100   | 4.5 min              | 7.3 sec            | 115                 |
+|                     | 150  | 6.5 min              | 10 sec            | 160                 |
+| | | | | |
+| [Ad Events](https://github.com/sagaripte/Quanta/blob/main/src/main/java/com/quanta/examples/AdEvents.java)       | 20    | 28 sec              | 1.1 sec            | 25                 |
+|        | 50    | 1.23 min              | 2.9 sec            | 60                 |
+|          | 100   | 2.5 min              | 5.8 sec            | 110                 |
+|                     | 150   | 3.9 min              | 8.9 sec            | 160                 |
 
 ## Quick Start Example (Ad Event Analysis)
 
