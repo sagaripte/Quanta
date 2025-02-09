@@ -4,7 +4,7 @@ Quanta is a high-performance analytical data engine designed for **millisecond q
 
 ## Key Features & Benefits
 
-* **Blazing-Fast Queries** – Execute complex slide & dice queries on millions of records in milliseconds.
+* **Blazing-Fast Queries** – Execute complex slice & dice queries on millions of records in milliseconds.
 * **Efficient Data Ingestion:** Rapid loading & appending with optimized memory management.
 * **Ultra-Low Memory Usage** – Efficient memory allocation & dictionary encoding.
 * **Zero GC Overhead** – Direct memory management eliminates Java's garbage collection pauses.
@@ -13,7 +13,9 @@ Quanta is a high-performance analytical data engine designed for **millisecond q
 * **Zero Third-Party Dependencies** – A pure **Java** implementation with no external libraries.
 
 ## How Quanta Works
-Quanta bypasses Java's garbage collection by directly managing memory, minimizing footprint and eliminating GC pauses using:
+
+Quanta delivers ultra-fast analytics by leveraging advanced memory management, columnar storage, and optimized indexing:
+
 * **Raw Memory Allocation:** Manages memory outside the Java heap for optimal control.
 * **Memory-Mapped Files:** Provides fast persistence, instant reloads, and efficient data access.
 * **Dictionary-Based Compression:** Compresses repeated values for efficient string storage.
